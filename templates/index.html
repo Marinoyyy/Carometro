@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Carômetro Logístico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <h1>Super Carômetro</h1>
+        
+        <div class="card-container" id="card-1" data-colaborador-id="1">
+            <div class="card-header">
+                <div class="overall-rating" id="overall-rating">--</div>
+                <div class="colaborador-info">
+                    <img src="{{ colaborador.foto }}" alt="Foto de {{ colaborador.nome }}" class="colaborador-photo">
+                    <h2 id="colaborador-nome">{{ colaborador.nome }}</h2>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="attributes-list">
+                    <li><span>{{ colaborador.atributos.tecnica }}</span> TÉC (Técnica)</li>
+                    <li><span>{{ colaborador.atributos.agilidade }}</span> AGI (Agilidade)</li>
+                    <li><span>{{ colaborador.atributos.comportamento }}</span> CMP (Comportamento)</li>
+                    <li><span>{{ colaborador.atributos.adaptabilidade }}</span> ADP (Adaptabilidade)</li>
+                    <li><span>{{ colaborador.atributos.qualidade }}</span> QUA (Qualidade)</li>
+                    <li><span>{{ colaborador.atributos.regularidade }}</span> REG (Regularidade)</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <label for="setor-selector">Mudar Setor:</label>
+                <select id="setor-selector">
+                    <option value="PK" selected>Picking (PK)</option>
+                    <option value="Checkout">Checkout</option>
+                    <option value="EXP">Expedição (EXP)</option>
+                    <option value="LJ">Loja (LJ)</option>
+                    <option value="REAB">Reabastecimento (REAB)</option>
+                    <option value="CE">Controle de Estoque (CE)</option>
+                    <option value="REC">Recebimento (REC)</option>
+                </select>
+            </div>
+        </div>
+        </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

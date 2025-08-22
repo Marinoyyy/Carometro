@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Novo Colaborador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('dashboard_setores') }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </a>
+            <h1>Adicionar Novo Colaborador</h1>
+        </div>
+
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data" class="add-colaborador-form">
+                
+                <div class="form-group">
+                    <label for="nome_completo">Nome Completo</label>
+                    <input type="text" id="nome_completo" name="nome_completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cargo">Cargo</label>
+                    <select id="cargo" name="cargo" required>
+                        <option value="Operacional">Operacional</option>
+                        <option value="Op Empilhadeira">Op Empilhadeira</option>
+                        </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="processo">Setor (Processo)</label>
+                    <select id="processo" name="processo" required>
+                        {% for setor in setores %}
+                            <option value="{{ setor }}">{{ setor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="turno">Turno</label>
+                    <select id="turno" name="turno" required>
+                        <option value="1º Turno">1º Turno</option>
+                        <option value="2º Turno">2º Turno</option>
+                         </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lider">Líder</label>
+                    <input type="text" id="lider" name="lider">
+                </div>
+
+                <div class="form-group">
+                    <label for="foto">Foto do Colaborador</label>
+                    <input type="file" id="foto" name="foto" accept="image/png, image/jpeg, image/webp">
+                </div>
+
+                <button type="submit" class="salvar-btn" style="width: 100%;">Salvar Colaborador</button>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>

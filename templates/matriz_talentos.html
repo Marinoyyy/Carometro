@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Matriz de Talentos - {{ nome_setor }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('grid_colaboradores', nome_setor=nome_setor, num_turno=num_turno) }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </a>
+            <h1>Matriz de Talentos (9-Box)</h1>
+        </div>
+        <h2 class="subtitle">{{ nome_setor }} - {{ num_turno }}º Turno</h2>
+        
+        <div class="nine-box-container">
+            <div class="axis-label y-axis">
+                <span>TÉCNICA</span>
+            </div>
+
+            <div class="nine-box-grid">
+                {% for i in range(3) %}
+                    {% for j in range(3) %}
+                    <div class="nine-box-cell cell-{{ 2-i }}-{{ j }}">
+                        <h4 class="cell-title">{{ titulos[i][j] }}</h4>
+                        <div class="colaboradores-in-cell">
+                            {% for colaborador in matriz[i][j] %}
+                                <a href="{{ url_for('detalhe_colaborador', colaborador_id=colaborador.id) }}" class="colaborador-item-matrix" title="{{ colaborador.Nome_completo }}">
+                                    <img src="{{ colaborador.foto }}" alt="{{ colaborador.Nome_completo }}">
+                                    <span>{{ colaborador.Nome_completo.split(' ')[0] }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+
+            <div class="axis-label x-axis">
+                <span>COMPORTAMENTO</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

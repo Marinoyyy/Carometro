@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Selecione o Turno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('dashboard_setores') }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </a>
+            <h1>Setor: {{ nome_setor }}</h1>
+        </div>
+        <h2 class="subtitle">Selecione o Turno</h2>
+        <div class="turno-grid">
+            <a href="{{ url_for('grid_colaboradores', nome_setor=nome_setor, num_turno=1) }}" class="turno-card" style="background-color: #007bff;">
+                <div class="icon"><i class="fa-solid fa-sun"></i></div>
+                <div class="info"><h2>1º Turno</h2></div>
+            </a>
+            <a href="{{ url_for('grid_colaboradores', nome_setor=nome_setor, num_turno=2) }}" class="turno-card" style="background-color: #4a5664;">
+                <div class="icon"><i class="fa-solid fa-moon"></i></div>
+                <div class="info"><h2>2º Turno</h2></div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

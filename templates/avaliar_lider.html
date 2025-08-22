@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Carômetro - Avaliação</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Super Carômetro</h1>
+        <nav>
+            <a href="{{ url_for('tela_visualizacao') }}">Visualizar</a>
+            <a href="{{ url_for('tela_de_avaliacao') }}" class="active">Avaliar</a>
+        </nav>
+    </header>
+
+    <div class="page-container">
+        <div class="evaluation-container">
+            <h2>Área de Avaliação do Líder</h2>
+            <form method="GET" action="{{ url_for('tela_de_avaliacao') }}">
+                <label for="lider-selector">Selecione o Líder:</label>
+                <select name="lider" id="lider-selector" onchange="this.form.submit()">
+                    <option value="">-- Escolha um líder --</option>
+                    {% for lider in lideres %}
+                        <option value="{{ lider }}" {% if lider == lider_selecionado %}selected{% endif %}>{{ lider }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            {% if lider_selecionado %}
+                <h3>Equipe de: {{ lider_selecionado }}</h3>
+                <div class="team-list">
+                    {% for membro in equipe %}
+                    <div class="team-member-form" data-nome="{{ membro.Nome_completo }}">
+                        <h4>{{ membro.Nome_completo }} <small>({{ membro.Cargo }})</small></h4>
+                        <form class="evaluation-form">
+                            <input type="hidden" name="nome_completo" value="{{ membro.Nome_completo }}">
+                            <div class="form-grid">
+                                {% for atr_key, atr_val in membro.atributos.items() %}
+                                <div class="form-group">
+                                    <label for="{{ atr_key }}-{{ membro.id }}">{{ atr_key.capitalize() }}</label>
+                                    <input type="range" id="{{ atr_key }}-{{ membro.id }}" name="{{ atr_key }}" min="1" max="99" value="{{ atr_val }}" oninput="this.nextElementSibling.value = this.value">
+                                    <output>{{ atr_val }}</output>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="submit">Salvar Avaliação</button>
+                            <span class="save-status"></span>
+                        </form>
+                    </div>
+                    {% else %}
+                    <p>Nenhum membro na equipe deste líder.</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Carômetro - Comparador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('dashboard_setores') }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </a>
+            <h1>Comparador de Talentos</h1>
+        </div>
+
+        <div class="comparison-selector-container">
+            <label for="colaborador-selector">Selecione de 2 a 4 colaboradores para comparar:</label>
+            <select id="colaborador-selector" multiple="multiple" style="width: 100%;">
+                {% for c in colaboradores %}
+                    <option value="{{ c.id }}">{{ c.Nome_completo }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" id="compare-btn" class="salvar-btn" style="width: auto; padding: 12px 30px; margin-top: 15px;">Comparar</button>
+        </div>
+
+        <div id="comparison-results" class="hidden">
+            <div id="comparison-cards-container"></div>
+            
+            <div class="comparison-chart-container">
+                <h3>Gráfico de Atributos</h3>
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Inicializa o seletor múltiplo (Select2) com um limite de 4 seleções.
+            $('#colaborador-selector').select2({
+                placeholder: 'Digite o nome do colaborador',
+                maximumSelectionLength: 4,
+                language: "pt-BR"
+            });
+        });
+
+        // Mapeamento dos elementos do HTML para variáveis JavaScript
+        const compareBtn = document.getElementById('compare-btn');
+        const resultsContainer = document.getElementById('comparison-results');
+        const cardsContainer = document.getElementById('comparison-cards-container');
+        const chartCanvas = document.getElementById('comparisonChart');
+        let comparisonChart = null; // Variável para armazenar a instância do gráfico
+
+        /**
+         * Função principal que é acionada ao clicar no botão "Comparar".
+         */
+        compareBtn.addEventListener('click', async () => {
+            const selectedIds = $('#colaborador-selector').val();
+
+            // Valida se o número de colaboradores selecionados está entre 2 e 4.
+            if (selectedIds.length < 2 || selectedIds.length > 4) {
+                alert('Por favor, selecione de 2 a 4 colaboradores para comparar.');
+                return;
+            }
+
+            try {
+                // Faz a chamada para a API, enviando os IDs dos colaboradores selecionados.
+                const response = await fetch('/api/comparar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ids: selectedIds })
+                });
+
+                // Converte a resposta da API para JSON.
+                const data = await response.json();
+
+                // Se a resposta da API indicar um erro, exibe a mensagem de erro.
+                if (!response.ok) {
+                    throw new Error(data.erro || 'Ocorreu um erro ao buscar os dados.');
+                }
+                
+                // Exibe a seção de resultados.
+                resultsContainer.classList.remove('hidden');
+
+                // Chama as funções para renderizar os cards e o gráfico com os dados recebidos.
+                renderCards(data.cards_data);
+                renderChart(data.chart_data);
+
+                // Leva o usuário até a seção de resultados.
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Erro no processo de comparação:", error);
+                alert("Ocorreu um erro inesperado. Detalhes: " + error.message);
+            }
+        });
+
+        /**
+         * Renderiza os cards dos colaboradores na tela.
+         * @param {Array} cardsData - Um array de objetos, cada um contendo dados de um colaborador.
+         */
+        function renderCards(cardsData) {
+            cardsContainer.innerHTML = ''; // Limpa o conteúdo anterior
+            cardsData.forEach(colaborador => {
+                let atributosHtml = '';
+                colaborador.atributos_detalhados.forEach(attr => {
+                    atributosHtml += `<li><span>${attr.valor_principal}</span> ${attr.nome_principal}</li>`;
+                });
+
+                // Cria o HTML do card para cada colaborador.
+                const cardHtml = `
+                <div class="comparison-card">
+                    <div class="perfil-coluna" style="padding-bottom: 20px;">
+                        <div class="overall" style="color: ${getCor(colaborador.overall)};">${colaborador.overall}</div>
+                        <img src="${colaborador.foto}" alt="${colaborador.Nome_completo}" style="border-color: ${getCor(colaborador.overall)};">
+                        <h2>${colaborador.Nome_completo}</h2>
+                        <p>${colaborador.Processo}</p>
+                    </div>
+                    <div class="atributos-coluna">
+                        <ul>${atributosHtml}</ul>
+                    </div>
+                </div>`;
+                cardsContainer.innerHTML += cardHtml;
+            });
+        }
+
+        /**
+         * Renderiza o gráfico de barras na tela.
+         * @param {Object} chartData - O objeto de configuração do gráfico vindo da API.
+         */
+        function renderChart(chartData) {
+            // Se já existe um gráfico, ele é destruído para evitar sobreposição.
+            if (comparisonChart) {
+                comparisonChart.destroy();
+            }
+            // Cria uma nova instância do gráfico.
+            comparisonChart = new Chart(chartCanvas, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Comparação de Atributos Principais' }
+                    }
+                }
+            });
+        }
+        
+        /**
+         * Função auxiliar para definir a cor do Overall com base na pontuação.
+         * @param {number} pontuacao - A pontuação do overall (0-100).
+         * @returns {string} - O código da cor em hexadecimal.
+         */
+        function getCor(pontuacao) {
+            if (pontuacao >= 80) return '#28a745'; // Verde
+            if (pontuacao >= 60) return '#ffc107'; // Amarelo
+            return '#dc3545'; // Vermelho
+        }
+    </script>
+</body>
+</html>

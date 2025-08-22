@@ -1,0 +1,1153 @@
+/* --- Importação da nova fonte 'IBM Plex Sans' --- */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+
+:root {
+    --primary-color: #011E38;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+    --text-color: #495057;
+}
+
+body {
+     font-family: 'IBM Plex Sans', sans-serif;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+    color: var(--dark-gray);
+    margin-bottom: 40px;
+}
+
+/* --- TELA 1: Dashboard de Setores --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.setor-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px;
+    border-radius: 15px;
+    color: #F5F1EB;
+    text-decoration: none;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.setor-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.setor-card .icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.setor-card h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+}
+
+.setor-card p {
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* TELA 2: Grid de Colaboradores */
+.colaborador-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 40px;
+    justify-items: center;
+}
+
+.colaborador-item {
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: transform 0.3s;
+}
+.colaborador-item:hover {
+    transform: scale(1.1);
+}
+
+.colaborador-item img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.colaborador-item span {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* TELA 3: Detalhe do Colaborador */
+.detalhe-container {
+    display: flex;
+    gap: 40px;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.perfil-coluna {
+    flex-basis: 35%;
+    text-align: center;
+}
+.perfil-coluna img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 6px solid; /* Cor definida no template */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.perfil-coluna h2 {
+    font-size: 28px;
+    margin: 15px 0 5px 0;
+    color: var(--dark-gray);
+}
+.perfil-coluna .overall {
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.atributos-coluna {
+    flex-basis: 65%;
+}
+
+.atributo-item {
+    margin-bottom: 20px;
+}
+
+.atributo-label {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Lógica do Líder para Edição */
+.atributo-item.editavel .progress-bar {
+    display: none; /* Esconde a barra de progresso no modo de edição */
+}
+input[type="range"] {
+    width: 100%;
+    cursor: pointer;
+}
+.salvar-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--success-color);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+.salvar-btn:hover {
+    background-color: #218838;
+}
+.save-status {
+    text-align: center;
+    margin-top: 15px;
+    font-style: italic;
+    color: var(--success-color);
+    height: 20px;
+}
+
+/* --- Estilos para o Botão de Troca de Modo --- */
+.role-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.role-toggle-btn {
+    background-color: #fff;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.role-toggle-btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.role-toggle-btn i {
+    margin-right: 8px;
+}
+
+/* --- Estilos para a Tela de Seleção de Turno --- */
+.subtitle {
+    text-align: center;
+    color: #6c757d;
+    font-weight: 400;
+    margin-top: -30px;
+    margin-bottom: 40px;
+}
+
+.turno-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.turno-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 30px;
+    border-radius: 20px;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.turno-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.turno-card .icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.turno-card h2 {
+    margin: 0;
+    font-size: 32px;
+}
+
+/* --- ESTILOS PARA NOVA TELA DE DETALHES REFINADA --- */
+.detalhe-container-refinado {
+    display: flex;
+    gap: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.atributos-coluna-refinada {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas de atributos */
+    gap: 30px;
+}
+
+.atributo-principal-bloco {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.atributo-principal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.atributo-principal-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.atributo-principal-info i {
+    font-size: 20px;
+}
+
+.atributo-principal-valor {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.sub-atributos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sub-atributo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #495057;
+}
+
+.sub-atributo-item label {
+    flex-basis: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.sub-atributo-item span {
+    font-weight: bold;
+}
+
+.slider-container {
+    flex-basis: 50%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.slider-container input[type="range"] {
+    width: 100%;
+    margin: 0;
+}
+.slider-container output {
+    font-weight: bold;
+    min-width: 20px;
+    text-align: right;
+}
+
+/* --- Estilos para o Botão Voltar e Header --- */
+.header-com-voltar {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaço entre o botão e o título */
+    margin-bottom: 20px;
+    position: relative; /* Necessário para centralizar o título corretamente */
+}
+
+.header-com-voltar h1 {
+    margin: 0;
+    flex-grow: 1; /* Faz o título ocupar o espaço restante */
+    text-align: center; /* Centraliza o título */
+    padding-right: 120px; /* Compensa o espaço do botão para uma centralização mais precisa */
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #6c757d; /* Cinza escuro */
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap; /* Impede que o texto quebre */
+    width: 100px; /* Largura fixa */
+}
+
+.back-btn:hover {
+    background-color: #5a6268; /* Cinza um pouco mais escuro */
+}
+
+/* --- Estilos para o Cabeçalho da Página de Detalhes --- */
+.header-detalhe {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Ajusta o container do botão de troca de modo para não ter margem extra */
+.header-detalhe .role-toggle-container {
+    margin-bottom: 0;
+}
+
+/* --- Estilos para a Página de Mudança de Setor --- */
+.change-sector-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.change-sector-container h3 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.change-sector-form {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.change-sector-form label {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.change-sector-form select {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Botão de Mudar Setor na página de detalhes */
+.change-sector-btn {
+    display: inline-block;
+    background-color: #17a2b8; /* Azul-petróleo */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.change-sector-btn:hover {
+    background-color: #138496;
+}
+
+.change-sector-btn i {
+    margin-right: 8px;
+}
+
+/* --- ESTILOS PARA O NOVO BOTÃO NO DASHBOARD --- */
+.header-dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+.header-dashboard h1 {
+    margin: 0;
+}
+.btn-detalhamento {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.btn-detalhamento:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* --- ESTILOS PARA A PÁGINA DE DETALHAMENTO GERAL --- */
+.turno-section {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+}
+.turno-section h2 {
+    font-size: 28px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-top: 0;
+}
+.ranking-container {
+    margin-bottom: 30px;
+}
+.ranking-container:last-child {
+    margin-bottom: 0;
+}
+.ranking-container h3 {
+    font-size: 20px;
+    color: #343a40;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Grid de Estrelas */
+.estrelas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.time-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+.time-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+.estrelas-rating {
+    font-size: 24px;
+    color: #e9ecef;
+    margin-bottom: 10px;
+}
+.estrelas-rating i.ativo {
+    color: #ffc107;
+}
+.media-overall-time {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* Grid de Melhores Overalls */
+.setores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.setor-ranking-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+}
+.setor-ranking-card h4 {
+    margin: 0 0 15px 0;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+.top-colaboradores-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.top-colaboradores-lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.colaborador-info-ranking {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.colaborador-info-ranking img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.overall-ranking {
+    font-size: 18px;
+    font-weight: 700;
+    color: #007bff;
+}
+
+/* --- ESTILOS PARA A MATRIZ DE TALENTOS (9-BOX) --- */
+.nine-box-container {
+    position: relative;
+    padding: 50px; /* Espaço para os labels dos eixos */
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+}
+
+.nine-box-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 200px); /* Altura mínima de cada célula */
+    border: 1px solid #dee2e6;
+}
+
+.nine-box-cell {
+    border: 1px solid #e1dee6;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.nine-box-cell .cell-title {
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-size: 16px;
+    color: #495057;
+    font-weight: 600;
+}
+
+.colaboradores-in-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-content: flex-start;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.colaborador-item-matrix {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    width: 60px;
+}
+
+.colaborador-item-matrix img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 5px;
+    border: 2px solid #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.colaborador-item-matrix:hover img {
+    transform: scale(1.1);
+}
+
+.colaborador-item-matrix span {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* Labels dos Eixos */
+.axis-label {
+    position: absolute;
+    color: #6c757d;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.y-axis {
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+.x-axis {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Cores de fundo para as células (opcional, mas ajuda na visualização) */
+.cell-2-2 { background-color: rgba(40, 167, 69, 0.1); } /* Alto Potencial */
+.cell-2-1, .cell-1-2 { background-color: rgba(0, 123, 255, 0.1); } /* Forte Desempenho */
+.cell-1-1 { background-color: rgba(255, 193, 7, 0.1); } /* Mantenedor */
+.cell-0-0 { background-color: rgba(220, 53, 69, 0.1); } /* Inadequado */
+
+
+/* --- ESTILOS PARA A PÁGINA DO COMPARADOR --- */
+.comparison-selector-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+}
+.comparison-selector-container label {
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+#comparison-results.hidden {
+    display: none;
+}
+
+#comparison-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.comparison-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+.comparison-card .atributos-coluna ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.comparison-card .atributos-coluna li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.comparison-card .atributos-coluna li span {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.comparison-chart-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* Ajustes para a biblioteca Select2 */
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 5px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: rgba(255,255,255,0.7);
+    margin-right: 5px;
+}
+
+/* --- ESTILOS PARA INSÍGNIAS (PLAYSTYLES) --- */
+.lider-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+.manage-insignias-btn {
+    background-color: #6f42c1; /* Roxo */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.manage-insignias-btn:hover {
+    background-color: #5a32a3;
+}
+
+.insignias-atribuidas-container {
+    margin-top: 30px;
+    text-align: left;
+    width: 100%;
+}
+.insignias-atribuidas-container h3 {
+    font-size: 18px;
+    color: var(--dark-gray);
+    margin-bottom: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+.insignias-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.insignia-item-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f8f9fa;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    border: 1px solid #e9ecef;
+}
+.insignia-item-display i {
+    color: var(--primary-color);
+}
+.no-insignias {
+    font-style: italic;
+    color: #6c757d;
+}
+
+/* --- ESTILOS PARA O MODAL DE SELEÇÃO --- */
+.modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.hidden {
+    display: none;
+}
+.modal-content {
+    background-color: #fff;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.modal-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+.close-btn {
+    font-size: 30px;
+    font-weight: bold;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.modal-body {
+    padding: 30px;
+    overflow-y: auto;
+}
+.insignias-selecao-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+.insignia-selecao-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.insignia-selecao-item:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+.insignia-selecao-item.selecionada {
+    border-color: #007bff;
+    background-color: #e7f1ff;
+}
+.insignia-icon {
+    font-size: 24px;
+    color: #007bff;
+    flex-shrink: 0;
+}
+.insignia-text h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+.insignia-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+.insignia-checkbox {
+    margin-left: auto;
+    font-size: 20px;
+    color: #ccc;
+}
+.insignia-selecao-item.selecionada .insignia-checkbox {
+    color: #007bff;
+}
+.modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+/* --- ESTILOS PARA O PLANO DE DESENVOLVIMENTO (PDI) --- */
+.pdi-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 40px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.pdi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+.pdi-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+.add-pdi-btn {
+    background-color: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.add-pdi-btn:hover {
+    background-color: #218838;
+}
+
+#form-add-pdi {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+#form-add-pdi textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+#form-add-pdi input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+.form-pdi-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.form-pdi-buttons .cancel-btn {
+    background-color: #6c757d;
+}
+
+#pdi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.pdi-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+}
+.pdi-item-content .pdi-descricao {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+.pdi-item-content .pdi-prazo {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.pdi-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.pdi-status {
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: white;
+}
+.pdi-item[data-status="A Fazer"] .pdi-status { background-color: #ffc107; color: #343a40;}
+.pdi-item[data-status="Em Andamento"] .pdi-status { background-color: #007bff; }
+.pdi-item[data-status="Concluído"] .pdi-status { background-color: #28a745; }
+
+.pdi-lider-controls { display: flex; gap: 10px; }
+.pdi-lider-controls button {
+    background: #e9ecef;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #495057;
+}
+.pdi-lider-controls button:hover { background-color: #ced4da; }
+
+/* --- ESTILOS PARA O FORMULÁRIO DE ADICIONAR COLABORADOR --- */
+.form-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.add-colaborador-form .form-group {
+    margin-bottom: 25px;
+}
+
+.add-colaborador-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.add-colaborador-form input[type="text"],
+.add-colaborador-form select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+}
+
+.add-colaborador-form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* --- ESTILOS PARA A SIMULAÇÃO DE OVERALL --- */
+.overall-preview-container {
+    margin-top: 30px;
+    text-align: left;
+    width: 100%;
+}
+
+.overall-preview-container h3 {
+    font-size: 18px;
+    color: var(--dark-gray);
+    margin-bottom: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.preview-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.preview-item span {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.preview-overall {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    min-width: 40px;
+    height: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

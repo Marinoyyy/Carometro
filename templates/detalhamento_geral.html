@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Carômetro - Detalhamento Geral</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('dashboard_setores') }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </a>
+            <h1>Detalhamento Geral</h1>
+        </div>
+
+        {% for turno, times in stats_times.items()|sort %}
+        <section class="turno-section">
+            <h2>{{ turno }}</h2>
+
+            <div class="ranking-container">
+                <h3><i class="fa-solid fa-star"></i> Ranking de Estrelas por Time</h3>
+                <div class="estrelas-grid">
+                    {% for time in times %}
+                    <div class="time-card">
+                        <h4>{{ time.nome_setor }}</h4>
+                        <div class="estrelas-rating">
+                            {% for i in range(5) %}
+                                <i class="fa-solid fa-star {% if i < time.estrelas %}ativo{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+                        <div class="media-overall-time">Média: {{ time.media_overall }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="ranking-container">
+                <h3><i class="fa-solid fa-trophy"></i> Melhores Overalls por Setor</h3>
+                <div class="setores-grid">
+                    {% for setor, colaboradores in dados_agrupados[turno].items()|sort %}
+                    <div class="setor-ranking-card">
+                        <h4>{{ setor }}</h4>
+                        <ol class="top-colaboradores-lista">
+                            {% for colaborador in colaboradores[:3] %}
+                            <li>
+                                <div class="colaborador-info-ranking">
+                                    <img src="{{ colaborador.foto }}" alt="Foto de {{ colaborador.Nome_completo }}">
+                                    <span>{{ colaborador.Nome_completo }}</span>
+                                </div>
+                                <span class="overall-ranking">{{ colaborador.overall }}</span>
+                            </li>
+                            {% else %}
+                            <li>Nenhum colaborador avaliado.</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+</body>
+</html>

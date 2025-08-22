@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes - {{ colaborador.Nome_completo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="page-detalhe">
+    <div class="container">
+        <div class="header-detalhe">
+            <a href="{{ url_for('grid_colaboradores', nome_setor=colaborador.Processo, num_turno=colaborador.Turno_Num) }}" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+            <div class="role-toggle-container">
+                {% if role == 'lider' %}
+                    <a href="{{ url_for('detalhe_colaborador', colaborador_id=colaborador.id, role='visualizador') }}" class="role-toggle-btn"><i class="fa-solid fa-eye"></i> Modo Visualizador</a>
+                {% else %}
+                    <a href="{{ url_for('detalhe_colaborador', colaborador_id=colaborador.id, role='lider') }}" class="role-toggle-btn"><i class="fa-solid fa-pen-to-square"></i> Modo Edição</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="detalhe-container-refinado">
+            <div class="perfil-coluna">
+                <div class="overall" style="color: {{ overall_cor }};">{{ overall }}</div>
+                <img src="{{ colaborador.foto }}" alt="Foto de {{ colaborador.Nome_completo }}" style="border-color: {{ overall_cor }};">
+                <h2>{{ colaborador.Nome_completo }}</h2>
+                <p>{{ colaborador.Cargo }}</p>
+                <p>{{ colaborador.Processo }} - {{ colaborador.Turno }}</p>
+
+                {% if role == 'lider' %}
+                <div class="lider-actions">
+                    <a href="{{ url_for('mudar_setor', colaborador_id=colaborador.id) }}" class="change-sector-btn"><i class="fa-solid fa-right-left"></i> Mudar Setor</a>
+                    <button type="button" id="btn-gerir-insignias" class="manage-insignias-btn"><i class="fa-solid fa-award"></i> Gerir Insígnias</button>
+                </div>
+                {% endif %}
+                
+                 <div class="insignias-atribuidas-container">
+                    <h3>Insígnias</h3>
+                    <div class="insignias-lista">
+                        {% for insignia_id in colaborador.insignias %}
+                            {% set insignia_info = insignias_disponiveis.get(insignia_id) %}
+                            {% if insignia_info %}
+                            <div class="insignia-item-display" title="{{ insignia_info.descricao }}">
+                                <i class="{{ insignia_info.icone }}"></i>
+                                <span>{{ insignia_info.titulo }}</span>
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <p class="no-insignias">Nenhuma insígnia atribuída.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="overall-preview-container">
+                    <h3>Simulação de Overall</h3>
+                    <div class="preview-lista">
+                        {% for preview in overalls_preview %}
+                        <div class="preview-item">
+                            <span>{{ preview.setor }}</span>
+                            <strong class="preview-overall" style="background-color: {{ get_cor_por_pontuacao(preview.overall) }};">
+                                {{ preview.overall }}
+                            </strong>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                </div>
+
+            <div class="atributos-coluna-refinada">
+                <form id="form-avaliacao">
+                    <input type="hidden" name="processo" value="{{ colaborador.Processo }}">
+                    {% for attr in colaborador.atributos_detalhados %}
+                    <div class="atributo-principal-bloco">
+                        <div class="atributo-principal-header">
+                            <div class="atributo-principal-info"><i class="{{ attr.icone }}" style="color: {{ attr.cor }};"></i><span>{{ attr.nome_principal }}</span></div>
+                            <div class="atributo-principal-valor" style="background-color: {{ attr.cor }};">{{ attr.valor_principal }}</div>
+                        </div>
+                        <div class="sub-atributos-lista">
+                            {% for sub in attr.sub_atributos %}
+                            <div class="sub-atributo-item">
+                                <label for="{{ sub.nome }}">{{ sub.nome }}</label>
+                                {% if role == 'lider' %}
+                                <div class="slider-container">
+                                    <input type="range" name="{{ sub.nome }}" id="{{ sub.nome }}" min="1" max="99" value="{{ sub.valor }}">
+                                    <output for="{{ sub.nome }}">{{ sub.valor }}</output>
+                                </div>
+                                {% else %}
+                                <span style="font-weight: bold;">{{ sub.valor }}</span>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if role == 'lider' %}
+                    <button type="submit" class="salvar-btn">Salvar Avaliação</button>
+                    <div class="save-status"></div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <div class="history-chart-container" style="background: white; padding: 30px; border-radius: 12px; margin-top: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+            <h3 style="text-align: center; margin-top: 0; color: #343a40;">Histórico de Evolução do Overall</h3>
+            <canvas id="evolutionChart"></canvas>
+        </div>
+    </div>
+
+    {% if role == 'lider' %}
+    <div id="insignia-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Gerir Insígnias para {{ colaborador.Nome_completo }}</h2>
+                <button id="modal-close-btn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Selecione as insígnias que melhor representam os pontos fortes deste colaborador.</p>
+                <div class="insignias-selecao-grid">
+                    {% for id, insignia in insignias_disponiveis.items() %}
+                    <div class="insignia-selecao-item {% if id in colaborador.insignias %}selecionada{% endif %}" data-id="{{ id }}">
+                        <div class="insignia-icon"><i class="{{ insignia.icone }}"></i></div>
+                        <div class="insignia-text">
+                            <h4>{{ insignia.titulo }}</h4>
+                            <p>{{ insignia.descricao }}</p>
+                        </div>
+                        <div class="insignia-checkbox"><i class="fa-solid fa-check"></i></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="salvar-btn">Salvar Insígnias</button>
+                <div id="modal-save-status" class="save-status"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Lógica de Avaliação (existente) ---
+        if ("{{ role }}" === "lider") {
+            // ... (código existente para o formulário de avaliação)
+            const form = document.getElementById('form-avaliacao');
+            form.querySelectorAll('input[type="range"]').forEach(slider => {
+                const output = document.querySelector(`output[for="${slider.name}"]`);
+                slider.oninput = () => { output.value = slider.value; };
+            });
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const status = form.querySelector('.save-status');
+                status.textContent = 'Salvando...';
+                const sub_atributos = {};
+                const formData = new FormData(form);
+                for (let [key, value] of formData.entries()) {
+                    if (key !== 'processo') sub_atributos[key] = value;
+                }
+                const data = { nome_completo: "{{ colaborador.Nome_completo }}", processo: formData.get('processo'), sub_atributos };
+                const response = await fetch('/api/salvar_avaliacao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                status.textContent = response.ok ? 'Avaliação salva! Recarregando...' : 'Erro ao salvar.';
+                if(response.ok) setTimeout(() => window.location.reload(), 1500);
+            };
+        }
+
+        // --- Gráfico de Histórico (existente) ---
+        // ... (código existente para o gráfico de evolução)
+        (async function renderizarGraficoEvolucao() {
+            const colaboradorId = {{ colaborador.id }};
+            try {
+                const response = await fetch(`/api/colaborador/${colaboradorId}/historico`);
+                if (!response.ok) throw new Error('Falha ao buscar dados');
+                const historico = await response.json();
+                const chartContainer = document.querySelector('.history-chart-container');
+                if (!historico || historico.length < 2) {
+                    if(chartContainer) chartContainer.innerHTML = '<p style="text-align:center;">O histórico de evolução aparecerá aqui quando houver pelo menos duas avaliações salvas.</p>';
+                    return;
+                }
+                const labels = historico.map(item => new Date(item.data).toLocaleDateString('pt-BR'));
+                const dataPoints = historico.map(item => item.overall);
+                new Chart(document.getElementById('evolutionChart'), { type: 'line', data: { labels: labels, datasets: [{ label: 'Overall', data: dataPoints, borderColor: 'rgb(75, 192, 192)', backgroundColor: 'rgba(75, 192, 192, 0.2)', fill: true, tension: 0.1 }] }, options: { responsive: true, scales: { y: { suggestedMin: Math.min(...dataPoints) - 5, suggestedMax: Math.max(...dataPoints) + 5 } }, plugins: { legend: { display: false } } } });
+            } catch (error) {
+                console.error("Erro ao renderizar gráfico:", error);
+            }
+        })();
+
+        // --- NOVO: Lógica para o Modal de Insígnias ---
+        if ("{{ role }}" === "lider") {
+            const modal = document.getElementById('insignia-modal');
+            const openModalBtn = document.getElementById('btn-gerir-insignias');
+            const closeModalBtn = document.getElementById('modal-close-btn');
+            const saveModalBtn = document.getElementById('modal-save-btn');
+
+            openModalBtn.onclick = () => modal.classList.remove('hidden');
+            closeModalBtn.onclick = () => modal.classList.add('hidden');
+            window.onclick = (e) => { if (e.target == modal) modal.classList.add('hidden'); };
+
+            // Lógica para selecionar/desselecionar
+            document.querySelectorAll('.insignia-selecao-item').forEach(item => {
+                item.onclick = () => item.classList.toggle('selecionada');
+            });
+
+            // Lógica para salvar
+            saveModalBtn.onclick = async () => {
+                const status = document.getElementById('modal-save-status');
+                status.textContent = "Salvando...";
+                
+                const insigniasSelecionadas = [];
+                document.querySelectorAll('.insignia-selecao-item.selecionada').forEach(item => {
+                    insigniasSelecionadas.push(item.dataset.id);
+                });
+
+                const data = {
+                    nome_completo: "{{ colaborador.Nome_completo }}",
+                    insignias: insigniasSelecionadas
+                };
+
+                const response = await fetch(`/api/colaborador/{{ colaborador.id }}/salvar_insignias`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                status.textContent = response.ok ? "Insígnias salvas! Recarregando..." : "Erro ao salvar.";
+                if(response.ok) setTimeout(() => window.location.reload(), 1500);
+            };
+        }
+    });
+    </script>
+</body>
+</html>

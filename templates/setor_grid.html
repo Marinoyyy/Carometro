@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Equipe - {{ nome_setor }} ({{ num_turno }}º Turno)</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('selecao_turno', nome_setor=nome_setor) }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+            </a>
+            <h1>Equipe: {{ nome_setor }} - {{ num_turno }}º Turno</h1>
+        </div>
+
+        <div class="role-toggle-container" style="display: flex; gap: 15px;"> <a href="{{ url_for('matriz_talentos', nome_setor=nome_setor, num_turno=num_turno) }}" class="role-toggle-btn" style="background-color: #6f42c1; border-color: #6f42c1; color: white;">
+                <i class="fa-solid fa-th"></i> Ver Matriz 9-Box
+            </a>
+            
+            {% if role == 'lider' %}
+                <a href="{{ url_for('grid_colaboradores', nome_setor=nome_setor, num_turno=num_turno, role='visualizador') }}" class="role-toggle-btn">
+                    <i class="fa-solid fa-eye"></i> Mudar para Modo Visualizador
+                </a>
+            {% else %}
+                <a href="{{ url_for('grid_colaboradores', nome_setor=nome_setor, num_turno=num_turno, role='lider') }}" class="role-toggle-btn">
+                    <i class="fa-solid fa-pen-to-square"></i> Mudar para Modo Edição
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="colaborador-grid">
+            {% for membro in equipe %}
+                <a href="{{ url_for('detalhe_colaborador', colaborador_id=membro.id, role=role) }}" class="colaborador-item">
+                    <img src="{{ membro.foto }}" alt="Foto de {{ membro.Nome_completo }}">
+                    <span>{{ membro.Nome_completo.split(' ')[0] }}</span>
+                </a>
+            {% else %}
+                <p>Nenhum colaborador encontrado para este setor e turno.</p>
+            {% endfor %}
+        </div>
+        
+    </div>
+</body>
+</html>

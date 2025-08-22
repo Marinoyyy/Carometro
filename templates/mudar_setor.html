@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Mudar Setor - {{ colaborador.Nome_completo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="page-detalhe">
+    <div class="container">
+        <div class="header-com-voltar">
+            <a href="{{ url_for('detalhe_colaborador', colaborador_id=colaborador.id) }}" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Cancelar
+            </a>
+            <h1>Mudar Setor</h1>
+        </div>
+
+        <div class="change-sector-container">
+            <h3>{{ colaborador.Nome_completo }}</h3>
+            <p>Setor Atual: <strong>{{ colaborador.Processo }}</strong></p>
+            
+            <form method="POST" class="change-sector-form">
+                <label for="setor-select">Selecione o Novo Setor:</label>
+                <select name="novo_setor" id="setor-select">
+                    {% for setor in todos_setores %}
+                        <option value="{{ setor }}" {% if setor == colaborador.Processo %}disabled{% endif %}>
+                            {{ setor }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="salvar-btn">Confirmar Mudança de Setor</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

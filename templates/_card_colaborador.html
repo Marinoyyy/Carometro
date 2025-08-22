@@ -1,0 +1,38 @@
+<div class="card-container" data-colaborador-id="{{ colaborador.id }}">
+    <div class="card-header">
+        <div class="overall-rating" id="overall-{{ colaborador.id }}">{{ colaborador.overall_inicial }}</div>
+        <div class="colaborador-info">
+            <img src="{{ colaborador.foto }}" alt="Foto de {{ colaborador.Nome_completo }}" class="colaborador-photo">
+            
+            <h3 class="colaborador-nome">
+                {# Verifica se o nome completo existe e é um texto antes de o dividir #}
+                {% if colaborador.Nome_completo and colaborador.Nome_completo is string %}
+                    {{ colaborador.Nome_completo.split(' ')[0] }} {{ colaborador.Nome_completo.split(' ')[-1] }}
+                {% else %}
+                    Nome Indisponível
+                {% endif %}
+            </h3>
+
+            <p class="colaborador-cargo">{{ colaborador.Cargo }}</p>
+        </div>
+    </div>
+    <div class="card-body">
+        <ul class="attributes-list">
+            <li><span>{{ colaborador.atributos.tecnica }}</span> TÉC</li>
+            <li><span>{{ colaborador.atributos.agilidade }}</span> AGI</li>
+            <li><span>{{ colaborador.atributos.comportamento }}</span> CMP</li>
+            <li><span>{{ colaborador.atributos.adaptabilidade }}</span> ADP</li>
+            <li><span>{{ colaborador.atributos.qualidade }}</span> QUA</li>
+            <li><span>{{ colaborador.atributos.regularidade }}</span> REG</li>
+        </ul>
+    </div>
+    <div class="card-footer">
+        <select class="setor-selector" data-colaborador-id="{{ colaborador.id }}">
+            {% for setor_nome in ['PICKING', 'CHECK-OUT', 'EXPEDICAO'] %}
+             <option value="{{ setor_nome }}" {% if colaborador.Processo == setor_nome %}selected{% endif %}>
+                {{ setor_nome }}
+             </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

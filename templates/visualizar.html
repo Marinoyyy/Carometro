@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Carômetro - Visualização</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Super Carômetro</h1>
+        <nav>
+            <a href="{{ url_for('tela_visualizacao') }}" class="active">Visualizar</a>
+            <a href="{{ url_for('tela_de_avaliacao') }}">Avaliar</a>
+        </nav>
+    </header>
+
+    <div class="page-container">
+        {% for setor, colaboradores in colaboradores_por_setor.items() %}
+            <section class="setor-section">
+                <h2>{{ setor }}</h2>
+                <div class="grid-container">
+                    {% for colaborador in colaboradores %}
+                        {% include '_card_colaborador.html' %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
