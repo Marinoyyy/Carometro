@@ -5,9 +5,9 @@ cloudinary
 python-dotenv
 gunicorn
 openpyxl
-traceback
 cloudinary.uploader
 os
 datetime
+
 
 
