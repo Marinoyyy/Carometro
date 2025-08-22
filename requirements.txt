@@ -5,9 +5,9 @@ cloudinary
 python-dotenv
 gunicorn
 openpyxl
-cloudinary.uploader
-os
-datetime
+requests==2.31.0
+
+
 
 
 
