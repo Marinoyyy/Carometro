@@ -29,8 +29,7 @@
 
                 {% if role == 'lider' %}
                 <div class="lider-actions">
-                    <a href="{{ url_for('mudar_setor', colaborador_id=colaborador.id) }}" class="change-sector-btn"><i class="fa-solid fa-right-left"></i> Mudar Setor</a>
-                    <button type="button" id="btn-gerir-insignias" class="manage-insignias-btn"><i class="fa-solid fa-award"></i> Gerir Insígnias</button>
+                    <a href="{{ url_for('mudar_setor', nome_completo=colaborador.Nome_completo) }}" class="change-sector-btn"><i class="fa-solid fa-right-left"></i> Mudar Setor</a>                    <button type="button" id="btn-gerir-insignias" class="manage-insignias-btn"><i class="fa-solid fa-award"></i> Gerir Insígnias</button>
                 </div>
                 {% endif %}
                 
