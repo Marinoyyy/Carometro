@@ -3,7 +3,7 @@ import json
 import os
 import time
 from unidecode import unidecode
-from flask import Flask, jsonify, render_template, request, url_for, redirect
+from flask import Flask, jsonify, render_template, request, url_for, redirect, send_from_directory
 from datetime import datetime 
 import traceback
 import cloudinary
@@ -29,6 +29,8 @@ ARQUIVO_AVALIACOES = 'avaliacoes.json'
 ARQUIVO_INSIGNIAS = 'insignias_colaboradores.json'
 ARQUIVO_PDI = 'pdi_colaboradores.json'
 ARQUIVO_HISTORICO = 'historico_avaliacoes.json'
+ARQUIVO_MUDANCAS_SETOR = 'mudancas_setor.json'
+
 
 # Estrutura de Atributos e Sub-atributos
 ESTRUTURA_ATRIBUTOS = {
@@ -275,30 +277,37 @@ def adicionar_colaborador():
     setores = [setor for setor in PESOS.keys() if setor != 'DEFAULT']
     return render_template('adicionar_colaborador.html', setores=setores)
 
-@app.route('/colaborador/<int:colaborador_id>/mudar_setor', methods=['GET', 'POST'])
-def mudar_setor(colaborador_id):
-    df_completo = pd.read_excel(ARQUIVO_COLABORADORES)
-    # A lógica para encontrar o colaborador precisa buscar na planilha completa
-    colaborador_linha = df_completo.loc[df_completo.index[df_completo['Nome_completo'] == request.args.get('nome_completo')]] if 'nome_completo' in request.args else df_completo.iloc[colaborador_id-1] # Fallback por ID se nome não for passado
-    if colaborador_linha.empty:
-        return "Colaborador não encontrado", 404
-    colaborador = colaborador_linha.to_dict('records')[0]
-    
-    todos_setores = [setor for setor in PESOS.keys() if setor != 'DEFAULT']
-    todos_setores.append("Desligado")
-    
+@app.route('/colaborador/<string:nome_completo>/mudar_setor', methods=['GET', 'POST'])
+def mudar_setor(nome_completo):
+    # A lógica POST continua igual, mas usamos um bloco try/except para segurança
     if request.method == 'POST':
-        novo_setor = request.form.get('novo_setor')
         try:
-            df_completo.loc[df_completo['Nome_completo'] == colaborador['Nome_completo'], 'Processo'] = novo_setor
+            df_completo = pd.read_excel(ARQUIVO_COLABORADORES)
+            novo_setor = request.form.get('novo_setor')
+            df_completo.loc[df_completo['Nome_completo'] == nome_completo, 'Processo'] = novo_setor
             df_completo.to_excel(ARQUIVO_COLABORADORES, index=False)
             return redirect(url_for('dashboard_setores'))
         except Exception as e:
             print(f"ERRO AO ATUALIZAR A PLANILHA: {e}")
             return "Ocorreu um erro ao salvar a alteração.", 500
-            
-    return render_template('mudar_setor.html', colaborador=colaborador, todos_setores=todos_setores)
 
+    # Lógica GET refatorada para usar get_dados_completos()
+    try:
+        todos_colaboradores = get_dados_completos()
+        colaborador = next((c for c in todos_colaboradores if c['Nome_completo'] == nome_completo), None)
+
+        if not colaborador:
+            return "Colaborador não encontrado", 404
+
+        todos_setores = [setor for setor in PESOS.keys() if setor != 'DEFAULT']
+        todos_setores.append("Desligado")
+        
+        return render_template('mudar_setor.html', colaborador=colaborador, todos_setores=todos_setores)
+    except Exception as e:
+         print(f"ERRO AO CARREGAR PÁGINA DE MUDANÇA: {e}")
+         traceback.print_exc() # Imprime um erro mais detalhado na consola
+         return "Ocorreu um erro ao carregar a página.", 500
+    
 @app.route('/detalhamento')
 def detalhamento_geral():
     colaboradores = get_dados_completos()
@@ -453,6 +462,54 @@ def api_comparar():
         print(f"ERRO na API /api/comparar: {e}")
         traceback.print_exc()
         return jsonify({"erro": "Ocorreu um erro interno no servidor."}), 500
+
+
+# Substitui a tua função download_consolidado por esta versão melhorada
+
+@app.route('/dev/download_consolidado')
+def download_consolidado():
+    try:
+        # 1. Carrega os dados base
+        df_colaboradores = pd.read_excel(ARQUIVO_COLABORADORES)
+        avaliacoes = carregar_dados_json(ARQUIVO_AVALIACOES)
+        mudancas_setor = carregar_dados_json(ARQUIVO_MUDANCAS_SETOR)
+
+        # 2. Aplica as mudanças de setor pendentes
+        if mudancas_setor:
+            print(f"Aplicando {len(mudancas_setor)} mudanças de setor pendentes...")
+            for nome, mudanca in mudancas_setor.items():
+                df_colaboradores.loc[df_colaboradores['Nome_completo'] == nome, 'Processo'] = mudanca['novo_setor']
+
+        # 3. Consolida as avaliações (como antes)
+        if avaliacoes:
+            df_avaliacoes = pd.DataFrame.from_dict(avaliacoes, orient='index')
+            df_avaliacoes.reset_index(inplace=True)
+            df_avaliacoes.rename(columns={'index': 'Nome_completo'}, inplace=True)
+
+            df_colaboradores = df_colaboradores.set_index('Nome_completo')
+            df_avaliacoes = df_avaliacoes.set_index('Nome_completo')
+
+            df_colaboradores.update(df_avaliacoes)
+            for col in df_avaliacoes.columns:
+                if col not in df_colaboradores.columns:
+                    df_colaboradores[col] = df_avaliacoes[col]
+
+            df_colaboradores.reset_index(inplace=True)
+
+        # 4. Salva e envia o ficheiro final
+        nome_ficheiro_saida = 'Colaboradores_Consolidado.xlsx'
+        df_colaboradores.to_excel(nome_ficheiro_saida, index=False)
+
+        return send_from_directory(
+            directory='.',
+            path=nome_ficheiro_saida,
+            as_attachment=True
+        )
+
+    except Exception as e:
+        print(f"ERRO AO GERAR RELATÓRIO: {e}")
+        traceback.print_exc()
+        return "Ocorreu um erro interno ao gerar o relatório.", 500    
 
 # --- INICIALIZAÇÃO DO SERVIDOR ---
 if __name__ == '__main__':
